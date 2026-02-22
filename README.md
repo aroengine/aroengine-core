@@ -29,3 +29,18 @@ npm run ci:local
 
 ## Security
 If you discover a security issue, please report it privately to the maintainers instead of opening a public exploit report.
+
+## Hook Setup
+Install git hooks once per clone:
+
+```bash
+./scripts/install-git-hooks.sh
+```
+
+## OpenClaw Executor Build/Package
+
+- Build executor: `npm run openclaw:build`
+- Run executor: `npm run openclaw:start`
+- Package artifact: `npm run openclaw:package`
+
+Detailed instructions: `docs/implementation/OPENCLAW-INSTALL-PACKAGE.md`

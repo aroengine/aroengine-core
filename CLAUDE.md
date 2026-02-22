@@ -44,10 +44,15 @@ Production baseline freeze:
 - No further integration changes are required unless new features/profile capabilities are added.
 - Any non-additive contract/boundary change requires ADR update + contract/replay/idempotency tests + GO/NO-GO signoff.
 
-Wrapper artifacts shipped:
+Integration artifacts shipped:
 - ARO Profile Pack (BFF-loaded)
 - OpenClaw Skill Pack (Executor-loaded)
 - installer/onboarding/update/support layer
+
+Authority model:
+- Core Engine is the deterministic authority and system of record.
+- OpenClaw Executor is an adapter/governor behind Core Engine.
+- OpenClaw runtime is a pluggable execution substrate for authorized side effects only.
 
 ### Explicitly Out of Scope (MVP)
 - AI upsell engine
