@@ -13,8 +13,6 @@ Included (CE):
 
 Excluded (private EE):
 - Profile-specific backend/UI implementations
-- Internal strategy and detailed moat documentation
-- Internal skill packs and non-public operational assets
 
 ## Related Repositories
 - Public CE: https://github.com/aroengine/aroengine-core
