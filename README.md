@@ -64,3 +64,9 @@ Install git hooks once per clone:
 - Package artifact: `npm run openclaw:package`
 
 Detailed instructions: `docs/implementation/OPENCLAW-INSTALL-PACKAGE.md`
+<<<<<<< HEAD
+=======
+
+## Notes
+This repository may contain internal design/implementation materials that must not be published to CE without passing the CE export/boundary process.
+>>>>>>> b9e964d (Implement production GO conformance, async command queue worker, and evidence artifacts)
