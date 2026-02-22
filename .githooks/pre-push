@@ -8,4 +8,20 @@ if [[ -z "$ROOT_DIR" ]]; then
   exit 1
 fi
 
+REQUIRED_NAME="pyellamaraju"
+REQUIRED_EMAIL="pyellamaraju@users.noreply.github.com"
+
+CURRENT_NAME="$(git config user.name || true)"
+CURRENT_EMAIL="$(git config user.email || true)"
+
+if [[ "$CURRENT_NAME" != "$REQUIRED_NAME" || "$CURRENT_EMAIL" != "$REQUIRED_EMAIL" ]]; then
+  echo "❌ Push blocked: contributor identity must be ${REQUIRED_NAME}."
+  echo "   Current: name='${CURRENT_NAME:-<unset>}' email='${CURRENT_EMAIL:-<unset>}'"
+  echo "   Required: name='${REQUIRED_NAME}' email='${REQUIRED_EMAIL}'"
+  echo "   Fix with:"
+  echo "     git config user.name \"${REQUIRED_NAME}\""
+  echo "     git config user.email \"${REQUIRED_EMAIL}\""
+  exit 1
+fi
+
 "$ROOT_DIR/scripts/local-ci-gate.sh"

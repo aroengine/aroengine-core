@@ -14,4 +14,4 @@ chmod +x .githooks/pre-push scripts/local-ci-gate.sh scripts/install-git-hooks.s
 
 echo "✅ Git hooks installed."
 echo "   core.hooksPath is set to .githooks"
-echo "   pre-push now enforces local CI gate before every push."
+echo "   pre-push now enforces contributor identity (pyellamaraju) and local CI gate before every push."
