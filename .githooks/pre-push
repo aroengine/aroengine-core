@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(git rev-parse --show-toplevel)"
+
+if [[ -z "$ROOT_DIR" ]]; then
+  echo "❌ Unable to determine git repo root."
+  exit 1
+fi
+
+"$ROOT_DIR/scripts/local-ci-gate.sh"
