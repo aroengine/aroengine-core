@@ -22,6 +22,26 @@ Excluded (private EE):
 Apache-2.0. See `LICENSE` and `NOTICE`.
 
 ## Development
+# ARO Engine EE (Private)
+
+Private Enterprise repository for the Appointment Revenue Optimizer (ARO).
+
+## Purpose
+- Full private source of record for ARO.
+- Includes profile-specific implementations, internal implementation docs, and non-public packaging/governance assets.
+- Used for internal product development and private releases.
+
+## Repositories
+- Public CE: https://github.com/aroengine/aroengine-core
+- Private EE: https://github.com/aroengine/aroengine-ee
+
+## Identity Policy
+All commits and pushes must use:
+- GitHub user: `pyellamaraju`
+- Git email: `pyellamaraju@users.noreply.github.com`
+
+## Local Quality Gate
+Run before pushing:
 
 ```bash
 npm run ci:local
