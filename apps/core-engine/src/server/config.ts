@@ -9,6 +9,7 @@ const coreEngineEnvSchema = z.object({
   DATABASE_MIGRATION_LOCK_TIMEOUT: z.string().regex(/^\d+$/).transform(Number),
   OPENCLAW_EXECUTOR_URL: z.string().url(),
   OPENCLAW_SHARED_TOKEN: z.string().min(16),
+  CORE_SERVICE_SHARED_TOKEN: z.string().min(16),
   OPENCLAW_PERMISSION_MANIFEST_VERSION: z.string().min(1),
   CORE_COMMAND_QUEUE_FILE: z.string().min(1),
   CORE_DISPATCH_WORKER_INTERVAL_MS: z.string().regex(/^\d+$/).transform(Number),

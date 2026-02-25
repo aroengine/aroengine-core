@@ -26,6 +26,12 @@ export interface CoreEngineAppDependencies {
 export function buildCoreEngineApp(dependencies: CoreEngineAppDependencies) {
   const app = Fastify({ logger: false });
   const apiRateLimiter = new TokenBucketRateLimiter(100, 60_000);
+  const protectedServicePaths = [
+    '/v1/commands',
+    '/v1/events',
+    '/v1/subscriptions',
+    '/v1/webhooks/',
+  ];
 
   app.addHook('onRequest', async (request, reply) => {
     if (request.url.startsWith('/v1/')) {
@@ -39,6 +45,32 @@ export function buildCoreEngineApp(dependencies: CoreEngineAppDependencies) {
             'Too many requests. Please retry after 60 seconds.',
             undefined,
             60,
+          ),
+        );
+        await reply.status(mapped.statusCode).send(mapped.body);
+        return;
+      }
+    }
+
+    const requiresServiceAuth = protectedServicePaths.some((path) => request.url.startsWith(path));
+    if (requiresServiceAuth) {
+      const authorizationHeader = request.headers.authorization;
+      const expectedToken = `Bearer ${dependencies.config.CORE_SERVICE_SHARED_TOKEN}`;
+      if (authorizationHeader !== expectedToken) {
+        const mapped = toErrorResponse(
+          new AroError(ERROR_CODES.UNAUTHORIZED, 401, 'Invalid or missing service bearer token'),
+        );
+        await reply.status(mapped.statusCode).send(mapped.body);
+        return;
+      }
+
+      const tenantHeader = request.headers['x-tenant-id'];
+      if (typeof tenantHeader !== 'string' || tenantHeader.length === 0) {
+        const mapped = toErrorResponse(
+          new AroError(
+            ERROR_CODES.VALIDATION_ERROR,
+            400,
+            'Missing required tenant boundary header: x-tenant-id',
           ),
         );
         await reply.status(mapped.statusCode).send(mapped.body);

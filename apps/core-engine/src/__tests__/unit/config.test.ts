@@ -11,6 +11,7 @@ const validEnv = {
   DATABASE_MIGRATION_LOCK_TIMEOUT: '30000',
   OPENCLAW_EXECUTOR_URL: 'http://127.0.0.1:3200',
   OPENCLAW_SHARED_TOKEN: 'openclaw-shared-token-test',
+  CORE_SERVICE_SHARED_TOKEN: 'core-service-shared-token-test',
   OPENCLAW_PERMISSION_MANIFEST_VERSION: '1.0.0',
   CORE_COMMAND_QUEUE_FILE: '/tmp/aro-test-queue.json',
   CORE_DISPATCH_WORKER_INTERVAL_MS: '5000',

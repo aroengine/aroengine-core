@@ -42,6 +42,7 @@ const baseConfig: CoreEngineConfig = {
   DATABASE_MIGRATION_LOCK_TIMEOUT: 30000,
   OPENCLAW_EXECUTOR_URL: 'http://127.0.0.1:3200',
   OPENCLAW_SHARED_TOKEN: 'openclaw-shared-token-test',
+  CORE_SERVICE_SHARED_TOKEN: 'core-service-shared-token-test',
   OPENCLAW_PERMISSION_MANIFEST_VERSION: '1.0.0',
   CORE_COMMAND_QUEUE_FILE: '/tmp/aro-contract-command-queue.json',
   CORE_DISPATCH_WORKER_INTERVAL_MS: 5000,
@@ -107,6 +108,9 @@ describe('core-engine openclaw authority contract', () => {
     const missingHeaders = await app.inject({
       method: 'POST',
       url: '/v1/commands',
+      headers: {
+        authorization: `Bearer ${baseConfig.CORE_SERVICE_SHARED_TOKEN}`,
+      },
       payload: {
         commandType: 'integration.twilio.send_sms',
         payload: { to: '+15551234567' },
@@ -123,6 +127,7 @@ describe('core-engine openclaw authority contract', () => {
         'x-tenant-id': 'tenant-1',
         'idempotency-key': 'idem-non-int-1',
         'x-correlation-id': 'corr-non-int-1',
+        authorization: `Bearer ${baseConfig.CORE_SERVICE_SHARED_TOKEN}`,
       },
       payload: {
         commandType: 'appointment.schedule_reminders',
@@ -140,6 +145,7 @@ describe('core-engine openclaw authority contract', () => {
         'x-tenant-id': 'tenant-1',
         'idempotency-key': 'idem-int-1',
         'x-correlation-id': 'corr-int-1',
+        authorization: `Bearer ${baseConfig.CORE_SERVICE_SHARED_TOKEN}`,
       },
       payload: {
         commandType: 'integration.twilio.send_sms',
@@ -161,6 +167,10 @@ describe('core-engine openclaw authority contract', () => {
     const events = await app.inject({
       method: 'GET',
       url: '/v1/events?tenantId=tenant-1&after=0&limit=20',
+      headers: {
+        authorization: `Bearer ${baseConfig.CORE_SERVICE_SHARED_TOKEN}`,
+        'x-tenant-id': 'tenant-1',
+      },
     });
     expect(events.statusCode).toBe(200);
 

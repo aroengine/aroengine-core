@@ -30,6 +30,9 @@
     "security:secrets": "bash ./scripts/secret-scan.sh",
     "ci:local": "npm run lint && npm run typecheck && npm run test && npm run test:integration"
   },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4"
+  },
   "devDependencies": {
     "@types/node": "^22.13.9",
     "@typescript-eslint/eslint-plugin": "^8.25.0",

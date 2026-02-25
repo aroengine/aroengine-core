@@ -15,6 +15,7 @@ describe('bootstrap and naming exports', () => {
     process.env['DATABASE_MIGRATION_LOCK_TIMEOUT'] = '30000';
     process.env['OPENCLAW_EXECUTOR_URL'] = 'http://127.0.0.1:3200';
     process.env['OPENCLAW_SHARED_TOKEN'] = 'openclaw-shared-token-test';
+    process.env['CORE_SERVICE_SHARED_TOKEN'] = 'core-service-shared-token-test';
     process.env['OPENCLAW_PERMISSION_MANIFEST_VERSION'] = '1.0.0';
     process.env['CORE_COMMAND_QUEUE_FILE'] = '/tmp/aro-bootstrap-test-queue.json';
     process.env['CORE_DISPATCH_WORKER_INTERVAL_MS'] = '5000';

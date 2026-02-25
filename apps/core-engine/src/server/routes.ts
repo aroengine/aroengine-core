@@ -77,6 +77,10 @@ const commandHeadersSchema = z.object({
   'x-correlation-id': z.string().min(1),
 });
 
+const tenantHeaderSchema = z.object({
+  'x-tenant-id': z.string().min(1),
+});
+
 const commandBodySchema = z.object({
   commandType: z.string().min(1),
   payload: z.record(z.string(), z.unknown()),
@@ -282,9 +286,18 @@ export async function registerCommandRoutes(
   });
 
   app.get('/v1/events', async (request, reply) => {
+    const headers = tenantHeaderSchema.parse(request.headers);
     const query = listEventsQuerySchema.parse(request.query);
+    if (query.tenantId !== undefined && query.tenantId !== headers['x-tenant-id']) {
+      throw new AroError(
+        ERROR_CODES.VALIDATION_ERROR,
+        400,
+        'tenantId query must match x-tenant-id header',
+      );
+    }
+
     const options: { tenantId?: string; after?: string; limit?: number } = {
-      ...(query.tenantId === undefined ? {} : { tenantId: query.tenantId }),
+      tenantId: headers['x-tenant-id'],
       ...(query.after === undefined ? {} : { after: query.after }),
       ...(query.limit === undefined ? {} : { limit: query.limit }),
     };
@@ -297,7 +310,16 @@ export async function registerCommandRoutes(
   });
 
   app.post('/v1/subscriptions', async (request, reply) => {
+    const headers = tenantHeaderSchema.parse(request.headers);
     const payload = createSubscriptionBodySchema.parse(request.body);
+    if (payload.tenantId !== headers['x-tenant-id']) {
+      throw new AroError(
+        ERROR_CODES.VALIDATION_ERROR,
+        400,
+        'tenantId body must match x-tenant-id header',
+      );
+    }
+
     const subscription = dependencies.eventStream.createSubscription(payload.tenantId, payload.callbackUrl);
     return reply.status(201).send(subscription);
   });
@@ -417,8 +439,17 @@ export async function registerCommandRoutes(
   });
 
   app.post('/v1/webhooks/booking', async (request, reply) => {
+    const headers = tenantHeaderSchema.parse(request.headers);
     const payload = bookingWebhookSchema.parse(request.body);
-    const tenantId = payload.tenantId ?? 'tenant-default';
+    if (payload.tenantId !== undefined && payload.tenantId !== headers['x-tenant-id']) {
+      throw new AroError(
+        ERROR_CODES.VALIDATION_ERROR,
+        400,
+        'tenantId body must match x-tenant-id header',
+      );
+    }
+
+    const tenantId = headers['x-tenant-id'];
     const appointment = mvp.ingestBookingEvent({
       externalId: payload.externalId,
       customerPhone: payload.customerPhone,
@@ -464,8 +495,17 @@ export async function registerCommandRoutes(
   });
 
   app.post('/v1/webhooks/inbound-reply', async (request, reply) => {
+    const headers = tenantHeaderSchema.parse(request.headers);
     const payload = inboundReplyWebhookSchema.parse(request.body);
-    const tenantId = payload.tenantId ?? 'tenant-default';
+    if (payload.tenantId !== undefined && payload.tenantId !== headers['x-tenant-id']) {
+      throw new AroError(
+        ERROR_CODES.VALIDATION_ERROR,
+        400,
+        'tenantId body must match x-tenant-id header',
+      );
+    }
+
+    const tenantId = headers['x-tenant-id'];
 
     dependencies.eventStream.append({
       eventType: 'inbound.reply.received',

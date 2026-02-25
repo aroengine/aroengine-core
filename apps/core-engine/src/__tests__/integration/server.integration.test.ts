@@ -61,6 +61,7 @@ const baseConfig: CoreEngineConfig = {
   DATABASE_MIGRATION_LOCK_TIMEOUT: 30000,
   OPENCLAW_EXECUTOR_URL: 'http://127.0.0.1:3200',
   OPENCLAW_SHARED_TOKEN: 'openclaw-shared-token-test',
+  CORE_SERVICE_SHARED_TOKEN: 'core-service-shared-token-test',
   OPENCLAW_PERMISSION_MANIFEST_VERSION: '1.0.0',
   CORE_COMMAND_QUEUE_FILE: '/tmp/aro-test-command-queue.json',
   CORE_DISPATCH_WORKER_INTERVAL_MS: 5000,
@@ -140,6 +141,10 @@ describe('core-engine integration', () => {
     const response = await app.inject({
       method: 'POST',
       url: '/v1/commands',
+      headers: {
+        authorization: `Bearer ${baseConfig.CORE_SERVICE_SHARED_TOKEN}`,
+        'x-tenant-id': 'tenant-health-1',
+      },
       payload: { commandType: 'test.command', payload: {} },
     });
 
@@ -182,6 +187,10 @@ describe('core-engine integration', () => {
 
   it('serves internal admin API endpoints', async () => {
     const { app, commandDispatchWorker } = await createApp();
+    const serviceHeaders = {
+      authorization: `Bearer ${baseConfig.CORE_SERVICE_SHARED_TOKEN}`,
+      'x-tenant-id': 'tenant-health-1',
+    };
 
     const appointments = await app.inject({ method: 'GET', url: '/v1/admin/appointments' });
     expect(appointments.statusCode).toBe(200);
@@ -246,6 +255,7 @@ describe('core-engine integration', () => {
     const bookingWebhook = await app.inject({
       method: 'POST',
       url: '/v1/webhooks/booking',
+      headers: serviceHeaders,
       payload: {
         tenantId: 'tenant-health-1',
         externalId: 'cal_evt_100',
@@ -265,6 +275,7 @@ describe('core-engine integration', () => {
     const inboundReply = await app.inject({
       method: 'POST',
       url: '/v1/webhooks/inbound-reply',
+      headers: serviceHeaders,
       payload: {
         tenantId: 'tenant-health-1',
         messageId: 'msg_123',
@@ -309,6 +320,7 @@ describe('core-engine integration', () => {
         'x-tenant-id': 'tenant-health-1',
         'idempotency-key': 'idem-1',
         'x-correlation-id': 'corr-1',
+        authorization: `Bearer ${baseConfig.CORE_SERVICE_SHARED_TOKEN}`,
       },
       payload: {
         commandType: 'integration.twilio.send_sms',
@@ -324,6 +336,7 @@ describe('core-engine integration', () => {
     const events = await app.inject({
       method: 'GET',
       url: '/v1/events?tenantId=tenant-health-1&after=0&limit=50',
+      headers: serviceHeaders,
     });
     expect(events.statusCode).toBe(200);
     expect(events.json().events.length).toBeGreaterThan(0);
@@ -335,6 +348,7 @@ describe('core-engine integration', () => {
     const subscription = await app.inject({
       method: 'POST',
       url: '/v1/subscriptions',
+      headers: serviceHeaders,
       payload: {
         tenantId: 'tenant-health-1',
         callbackUrl: 'https://example.com/event-hook',
@@ -345,6 +359,7 @@ describe('core-engine integration', () => {
     const replay = await app.inject({
       method: 'POST',
       url: `/v1/subscriptions/${subscription.json().id}/replay`,
+      headers: serviceHeaders,
       payload: {},
     });
     expect(replay.statusCode).toBe(200);

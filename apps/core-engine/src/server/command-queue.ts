@@ -49,7 +49,11 @@ export class InMemoryCommandQueue implements CommandQueue {
     if (entry !== undefined) {
       entry.attempts += 1;
       entry.lastAttemptAt = new Date().toISOString();
-      entry.lastError = reason.length > 0 ? reason : undefined;
+      if (reason.length > 0) {
+        entry.lastError = reason;
+      } else {
+        delete entry.lastError;
+      }
       this.entries.set(executionId, entry);
     }
   }
@@ -99,7 +103,11 @@ export class FileBackedCommandQueue implements CommandQueue {
     if (entry !== undefined) {
       entry.attempts += 1;
       entry.lastAttemptAt = new Date().toISOString();
-      entry.lastError = reason.length > 0 ? reason : undefined;
+      if (reason.length > 0) {
+        entry.lastError = reason;
+      } else {
+        delete entry.lastError;
+      }
       this.cache.set(executionId, entry);
       this.flush();
     }
