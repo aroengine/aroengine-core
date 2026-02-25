@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/core-engine" },
+    { "path": "./apps/profile-backend-healthcare" },
+    { "path": "./apps/profile-ui-healthcare" },
+    { "path": "./apps/openclaw-executor" },
+    { "path": "./packages/workflow-engine" },
+    { "path": "./packages/integrations" },
+    { "path": "./packages/shared" }
+  ]
+}
